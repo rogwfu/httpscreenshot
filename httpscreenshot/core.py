@@ -89,38 +89,38 @@ def parseGnmap(inFile, autodetect):
     '''
     Parse a gnmap file into a dictionary. The dictionary key is the ip address or hostname.
     Each key item is a list of ports and whether or not that port is https/ssl. For example:
-        >>> targets
-        {'127.0.0.1': [[443, True], [8080, False]]}
-        '''
-        targets = {}
-        for hostLine in inFile:
-            currentTarget = []
-            #Pull out the IP address (or hostnames) and HTTP service ports
-            fields = hostLine.split(' ')
-            ip = fields[1] #not going to regex match this with ip address b/c could be a hostname
-            for item in fields:
-                #Make sure we have an open port with an http type service on it
-                if (item.find('http') != -1 or autodetect) and re.findall('\d+/open',item):
-                    port = None
-                    https = False
-                    '''
-                    nmap has a bunch of ways to list HTTP like services, for example:
-                        8089/open/tcp//ssl|http
-                        8000/closed/tcp//http-alt///
-                        8008/closed/tcp//http///
-                        8080/closed/tcp//http-proxy//
-                        443/open/tcp//ssl|https?///
-                        8089/open/tcp//ssl|http
-                        Since we want to detect them all, let's just match on the word http
-                        and make special cases for things containing https and ssl when we
-                        construct the URLs.
-                        '''
-                        port = item.split('/')[0]
+    >>> targets
+    {'127.0.0.1': [[443, True], [8080, False]]}
+    '''
+    targets = {}
+    for hostLine in inFile:
+        currentTarget = []
+        #Pull out the IP address (or hostnames) and HTTP service ports
+        fields = hostLine.split(' ')
+        ip = fields[1] #not going to regex match this with ip address b/c could be a hostname
+        for item in fields:
+            #Make sure we have an open port with an http type service on it
+            if (item.find('http') != -1 or autodetect) and re.findall('\d+/open',item):
+                port = None
+                https = False
+                '''
+                nmap has a bunch of ways to list HTTP like services, for example:
+                    8089/open/tcp//ssl|http
+                    8000/closed/tcp//http-alt///
+                    8008/closed/tcp//http///
+                    8080/closed/tcp//http-proxy//
+                    443/open/tcp//ssl|https?///
+                    8089/open/tcp//ssl|http
+                    Since we want to detect them all, let's just match on the word http
+                    and make special cases for things containing https and ssl when we
+                    construct the URLs.
+                '''
+                port = item.split('/')[0]
 
-                if item.find('https') != -1 or item.find('ssl') != -1:
-                    https = True
-                    #Add the current service item to the currentTarget list for this host
-                    currentTarget.append([port,https])
+            if item.find('https') != -1 or item.find('ssl') != -1:
+                https = True
+                #Add the current service item to the currentTarget list for this host
+                currentTarget.append([port,https])
 
         if(len(currentTarget) > 0):
             targets[ip] = currentTarget
@@ -384,7 +384,7 @@ def sslError(e):
         return False
 
 
-def main(args=sys.argv[1:], env=Environment()):
+def main(args=sys.argv[1:]):
     from httpscreenshot.cli import parser
 
     args = parser.parse_args()
