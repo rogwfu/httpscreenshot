@@ -7,6 +7,13 @@ apt-get install python-requests python-m2crypto phantomjs
 If you run into: 'module' object has no attribute 'PhantomJS'
 then pip install selenium (or pip install --upgrade selenium)
 
+## Installation on Mac OS X
+brew install phantomjs
+
+brew install freetype
+ln -s /usr/local/Cellar/freetype/2.5.5/include/freetype2/ /usr/local/include/freetype
+
+python setup.py develop
 
 ##Readme and Use cases:
 
