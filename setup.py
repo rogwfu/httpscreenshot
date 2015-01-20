@@ -5,7 +5,7 @@ install_requires = [
     'selenium',
     'requests',
     'm2crypto',
-    'pil']
+    'pillow']
 
 setup(name='httpscreenshot',
       version=httpscreenshot.__version__,
