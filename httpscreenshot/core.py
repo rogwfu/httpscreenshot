@@ -426,28 +426,29 @@ def main(args=sys.argv[1:]):
     subs = []
     if(args.dns_brute != None):
         subs = open(args.dns_brute,'r').readlines()
-        #Fire up the workers
-        urlQueue = multiprocessing.Queue()
-        manager = multiprocessing.Manager()
-        hostsDict = manager.dict()
-        workers = []
+    #Fire up the workers
+    urlQueue = multiprocessing.Queue()
+    manager = multiprocessing.Manager()
+    hostsDict = manager.dict()
+    workers = []
 
-        for i in range(args.workers):
-            p = multiprocessing.Process(target=worker,
-                                        args=(urlQueue,args.timeout,args.verbose,args.headless,args.autodetect, args.vhosts,subs,hostsDict,args.trygui))
+    for i in range(args.workers):
+        p = multiprocessing.Process(target=worker,
+                                    args=(urlQueue,args.timeout,args.verbose,args.headless,args.autodetect, args.vhosts,subs,hostsDict,args.trygui))
 
 
-            workers.append(p)
-            p.start()
+        workers.append(p)
+        p.start()
 
-        for url in urls:
-            urlQueue.put(url)
+    for url in urls:
+        print url
+        urlQueue.put(url)
 
-        for p in workers:
-            try:
-                p.join()
-            except KeyboardInterrupt:
-                print "[-] Ctrl-C received! Sending kill to threads..."
-                kill_received = True
-                for p in workers:
-                    p.terminate()
+    for p in workers:
+        try:
+            p.join()
+        except KeyboardInterrupt:
+            print "[-] Ctrl-C received! Sending kill to threads..."
+            kill_received = True
+            for p in workers:
+                p.terminate()
