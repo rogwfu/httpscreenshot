@@ -441,7 +441,6 @@ def main(args=sys.argv[1:]):
         p.start()
 
     for url in urls:
-        print url
         urlQueue.put(url)
 
     for p in workers:
